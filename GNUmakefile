@@ -283,31 +283,6 @@ tarball-pref: handin-check
 	rm lab$(LAB)-handin.tar
 	rm /tmp/lab$(LAB)diff.patch
 
-myapi.key: warn
-	@echo Get an API key for yourself by visiting $(WEBSUB)/
-	@read -p "Please enter your API key: " k; \
-	if test `echo -n "$$k" |wc -c` = 32 ; then \
-		TF=`mktemp -t tmp.XXXXXX`; \
-		if test "x$$TF" != "x" ; then \
-			echo -n "$$k" > $$TF; \
-			mv -f $$TF $@; \
-		else \
-			echo mktemp failed; \
-			false; \
-		fi; \
-	else \
-		echo Bad API key: $$k; \
-		echo An API key should be 32 characters long.; \
-		false; \
-	fi;
-
-warn:
-	@echo; \
-	echo "[31m******* WARNING *********"; \
-	echo "this is the 2016 6.828 lab"; \
-	echo "******* WARNING ********* [39m"; \
-	echo; \
-	false;
 
 #handin-prep:
 #	@./handin-prep
