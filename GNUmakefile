@@ -86,6 +86,7 @@ PERL	:= perl
 CFLAGS := $(CFLAGS) $(DEFS) $(LABDEFS) -O1 -fno-builtin -I$(TOP) -MD
 CFLAGS += -fno-omit-frame-pointer
 CFLAGS += -std=gnu99
+CFLAGS += -static
 CFLAGS += -Wall -Wno-format -Wno-unused -Werror -gstabs -m32
 # -fno-tree-ch prevented gcc from sometimes reordering read_ebp() before
 # mon_backtrace()'s function prologue on gcc version: (Debian 4.7.2-5) 4.7.2
@@ -146,7 +147,7 @@ QEMUOPTS += $(QEMUEXTRA)
 .gdbinit: .gdbinit.tmpl
 	sed "s/localhost:1234/localhost:$(GDBPORT)/" < $^ > $@
 
-gdb: warn
+gdb:
 	gdb -n -x .gdbinit
 
 pre-qemu: .gdbinit
@@ -283,6 +284,31 @@ tarball-pref: handin-check
 	rm lab$(LAB)-handin.tar
 	rm /tmp/lab$(LAB)diff.patch
 
+myapi.key:
+	@echo Get an API key for yourself by visiting $(WEBSUB)/
+	@read -p "Please enter your API key: " k; \
+	if test `echo -n "$$k" |wc -c` = 32 ; then \
+		TF=`mktemp -t tmp.XXXXXX`; \
+		if test "x$$TF" != "x" ; then \
+			echo -n "$$k" > $$TF; \
+			mv -f $$TF $@; \
+		else \
+			echo mktemp failed; \
+			false; \
+		fi; \
+	else \
+		echo Bad API key: $$k; \
+		echo An API key should be 32 characters long.; \
+		false; \
+	fi;
+
+warn:
+	@echo; \
+	echo "[31m******* WARNING *********"; \
+	echo "this is the 2016 6.828 lab"; \
+	echo "******* WARNING ********* [39m"; \
+	echo; \
+	false;
 
 #handin-prep:
 #	@./handin-prep
